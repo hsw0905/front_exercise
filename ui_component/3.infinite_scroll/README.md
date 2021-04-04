@@ -147,24 +147,21 @@ fetchMoreObserver.observe(fetchMoreTrigger);
 
 fetchMore();
 ```
-- <참고>
-```css
-/* q3 : style.css 파일 변경사항 시작 */
-#fetchMore {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
+- react 동영상 풀이
+```javascript
+const FetchMore = ({ loading, setPage }) => {
+  const fetchMoreTrigger = useRef(null);
+  const fetchMoreObserver = new IntersectionObserver(([{ isIntersecting }]) => {
+    // do something
+    if (isIntersecting) {
+      setPage((value) => value + 1);
+    }
+  });
 
-#fetchMore.loading {
-    display: block;
-    margin-top: 10px;
-    text-align: center;
-    line-height: 28px;
-    border-top: solid 1px #000;
-    border-bottom: solid 1px #000;
-    background-color: #ff9;
-}
-/* q3 : 변경사항 끝*/
+  useEffect(() => {
+    fetchMoreObserver.observe(fetchMoreTrigger.current);
+    return () => {
+      fetchMoreObserver.unobserve(fetchMoreTrigger.current);
+    };
+  }, []);
 ```

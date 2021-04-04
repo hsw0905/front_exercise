@@ -93,7 +93,7 @@ export const debounce = (func, delay) => {
 2. (...arg) : 전개 연산자를 사용한 이유?
     - 명시적으로 할당이 안된 모든 인자를 받아오기 위함
 3. bind(null, ...arg)는 무엇...?
-   - this와 자바스크립트 컨텍스트 개념
+   - this와 자바스크립트 컨텍스트 개념 [(참고)](https://medium.com/humanscape-tech/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%8B%A4%ED%96%89-%EC%BB%A8%ED%85%8D%EC%8A%A4%ED%8A%B8-1302cf139d25)
      - 실행 컨텍스트 : 인터프리터에 의해 실행되는 자바스크립트 환경
      - 자바스크립트 내부에서 스택으로 실행 컨텍스트를 관리(콜스택)
      - 실행되는 시점에 따라 실행 컨텍스트를 this가 가리킨다

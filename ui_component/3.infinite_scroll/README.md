@@ -45,7 +45,7 @@ const onScroll = (e) => {
 // 생각 : 같은 이벤트 발생할 것을 시간만 좀 늦추면 되지 않을까?
 
 document.addEventListener("scroll", setTimeout(onScroll, 2000));
-// Error...? 말도 안되는 소리
+// Error...? (실패)
 ```
 
 ```javascript
@@ -62,14 +62,14 @@ const onScroll = (e) => {
 document.addEventListener("scroll", throttle(onScroll, 2000));
 
 //utils.js
-export const throttle = (callBack, delay) => {
-  // callBack : onScroll 구현부 소스가 보인다
+export const throttle = (callback, delay) => {
+  // callback : onScroll 구현부 소스가 보인다
   return (e) => {
     // e: Scroll type이 들어간 Event 객체
-    setTimeout(callBack(e), delay); // 시간지연이 되지 않을까..?
+    setTimeout(callback(e), delay); // 시간지연이 되지 않을까..?
   }
 }
-// onScroll 이벤트에 연속적으로 나오던 scrollTop 값이 delay 시간이 지난 후 한번만 나온다
+// 실패 (시간지연 효과가 없음)
 ```
 - 동영상 풀이
 ```javascript
@@ -105,3 +105,66 @@ export const debounce = (func, delay) => {
 4. 그렇다면 bind 함수의 첫번째 인자를 null 값으로 넣은 이유?
     - null값 -> this: 전역객체를 가리킨다(기본 바인딩이 적용된다) => 커링 개념?
     - [this 바인딩 우선순위](https://jeonghwan-kim.github.io/2017/10/22/js-context-binding.html)
+    
+- Q3
+- IntersectionObserver API 사용 [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+- <해설 코멘트> : IntersectionObserver는 자바스크립트 메인 쓰레드에서 실행되는 Event Listener가 아닌 브라우저에서 별도로 마련한 API이므로 성능 저하의 우려가 적다.
+- 화면에 보여지는지 여부를 판단해서, 그 때 감시하고자 하는 요소가 뷰포트에 들어오거나 나갈 때, 들어왔는지 나갔는지 여부를 판단해주는 교차 영역 관리를 해주는 API
+- Throttle, Debounce 개념을 사용하여 반복되는 이벤트를 줄인 작업만으로도 충분하긴 하지만, 
+- 기왕이면 자바스크립트가 개입되지 않을 수 있는 방법이 있다면 그 방법을 고민해보는 것도 좋다
+- MDN 설명이 너무 어려워서..
+  - (MDN 정의 중): 상위 요소 또는 최상위 문서의 뷰포트 와 대상 요소의 교차점이란..
+  - ![viewPort](./img/intersectionObserver-1.png)
+  - [참고 블로그-1](https://velog.io/@katanazero86/Intersection-Observer-API)
+  - ![IntersectionObserverEntry](./img/intersectionObserver-2.png)  
+  - [참고 블로그-2](http://blog.hyeyoonjung.com/2019/01/09/intersectionobserver-tutorial/)
+  - 기본 구조
+  - ```javascript
+    const observer = new IntersectionObserver(callback[, options]);
+    // callback : 타겟 엘리먼트가 교차되었을 때 실행 할 callback 함수
+    // IntersectionObserver에서 반환하는 callback은 IntersectionObserverEntry 객체의 배열을 반환
+    // entries : IntersectionObserverEntity 객체의 리스트
+    // -> 배열 형태로 리턴
+    // -> forEach를 사용하거나, 단일 타겟이면 배열인 점을 고려할 것
+    // options : root(defalt: viewport), rootMargin, threshold(교차영역비율)..
+    ```
+  - Method
+    ```javascript
+    // 관찰 타겟 등록 후 관찰 시작
+    IntersectionObserver.observe(targetElement);
+    ```
+  - ![IntersectionObserverEntry](./img/intersectionObserverEntry.png)  
+- 동영상 풀이
+```javascript
+const fetchMoreObserver = new IntersectionObserver(([{ isIntersecting }]) => {
+  // do something
+  if (isIntersecting) {
+    fetchMore();
+  }
+});
+
+fetchMoreObserver.observe(fetchMoreTrigger);
+
+fetchMore();
+```
+- <참고>
+```css
+/* q3 : style.css 파일 변경사항 시작 */
+#fetchMore {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#fetchMore.loading {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    line-height: 28px;
+    border-top: solid 1px #000;
+    border-bottom: solid 1px #000;
+    background-color: #ff9;
+}
+/* q3 : 변경사항 끝*/
+```

@@ -133,7 +133,7 @@ export const debounce = (func, delay) => {
     // 관찰 타겟 등록 후 관찰 시작
     IntersectionObserver.observe(targetElement);
     ```
-  - ![IntersectionObserverEntry](./img/intersectionObserverEntry.png)  
+  - ![IntersectionObserverEntry](./img/intersectionObserverEntry.png)
 - 동영상 풀이
 ```javascript
 const fetchMoreObserver = new IntersectionObserver(([{ isIntersecting }]) => {

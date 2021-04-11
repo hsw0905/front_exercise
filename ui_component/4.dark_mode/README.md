@@ -81,3 +81,31 @@ document.querySelector('.toggle-button').onclick = () => {
 1. 깜빡임 현상 제거 -> setTimeout() 이용
 2. classList.add / remove -> classList.toggle() 사용이 더 깔끔
 4. theme의 값이 light / dark 외에 다른 값이 올 경우는 고려하지 않아도 될듯
+---
+### 추가로 구현해볼 부분
+1. 사용자가 지정한 테마가 없는 경우 OS가 제공하는 라이트/다크 모드를 적용되게 할 것
+
+- 생각해본 점
+- OS 레벨에서 제공하는 theme을 어떻게 감지할까?
+- CSS
+1. [미디어 쿼리](https://developer.mozilla.org/ko/docs/Web/CSS/Media_Queries)
+2. [prefer-color-scheme](https://developer.mozilla.org/ko/docs/Web/CSS/@media/prefers-color-scheme)
+- JavaScript (CSS의 미디어쿼리를 JS로 사용)
+1. [matchMedia-MDN](https://developer.mozilla.org/ko/docs/Web/API/Window/matchMedia)
+2. [blog](https://eunsukim.me/posts/how-to-use-media-query-with-javascript-matchmedia)
+
+- 동영상 풀이
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+  let theme = localStorage.getItem('theme');
+
+  // 1. 로컬 스토리지에 저장된 테마가 없다면 window.matchMedia 메서드로 사용자 OS 테마를 감지해 이를 테마에 적용한다.
+  // 2. 로컬 스토리지에 저장된 테마가 있다면 사용자 OS 테마보다 이를 우선 적용한다.
+  if (!theme) {
+    // 사용자 OS 테마가 다크 모드이면 matches는 ture다.
+    const { matches } = window.matchMedia('(prefers-color-scheme: dark)');
+    theme = matches ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+  }
+  / ... 생략
+```
